@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import Lenis from 'lenis'
 import { products, type Product } from '../data/products'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -71,12 +72,16 @@ export default function Experience() {
   const pointer = useRef({ x: 0, y: 0 })
   const [selected, setSelected] = useState<Product | null>(null)
   useEffect(() => {
+    const lenis = new Lenis({ lerp: .08, smoothWheel: true })
+    let raf = 0
+    const rafLoop = (time: number) => { lenis.raf(time); raf = requestAnimationFrame(rafLoop) }
+    raf = requestAnimationFrame(rafLoop)
     const onMove = (e: MouseEvent) => { pointer.current.x = (e.clientX / innerWidth - .5) * 2; pointer.current.y = (e.clientY / innerHeight - .5) * -2 }
     const selectProduct = (e: Event) => { const id = (e as CustomEvent<string>).detail; setSelected(products.find(p => p.id === id) ?? null) }
     const update = () => { progress.current = window.scrollY / Math.max(1, document.body.scrollHeight - innerHeight) }
     window.addEventListener('mousemove', onMove); window.addEventListener('scroll', update, { passive: true }); window.addEventListener('delfiore:select', selectProduct); update()
     const trigger = ScrollTrigger.create({ trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true, onUpdate: s => { progress.current = s.progress } })
-    return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('scroll', update); window.removeEventListener('delfiore:select', selectProduct); trigger.kill() }
+    return () => { cancelAnimationFrame(raf); lenis.destroy(); window.removeEventListener('mousemove', onMove); window.removeEventListener('scroll', update); window.removeEventListener('delfiore:select', selectProduct); trigger.kill() }
   }, [])
   return <>
     <div className="scene-canvas" aria-hidden="true"><Canvas dpr={[1, 1.35]} shadows gl={{ antialias: true, powerPreference: 'high-performance' }}><PerspectiveCamera makeDefault position={[0, 0, 6.3]} fov={38}/><Scene progress={progress} pointer={pointer}/></Canvas></div>
