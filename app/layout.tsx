@@ -4,6 +4,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Del Fiore — Artizan pendir, ləzzətin hekayəsi',
   description: 'Viazul MMC — Del Fiore Caciotta və Ricotta kolleksiyası.',
+  icons: { icon: '/Delfioredell/favicon.svg' },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
