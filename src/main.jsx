@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { ArrowUpRight, Menu, ShoppingBag, X } from 'lucide-react'
 import './styles.css'
 
-const A = '/assets/'
+const A = `${import.meta.env.BASE_URL}assets/`
 const products = [
   { image: 'cheese-14.png', name: 'Qara istiotlu', detail: 'Yumşaq, aromatik və cəsarətli', type: 'Yumşaq pendir', size: '180 q' },
   { image: 'cheese-16.png', name: 'Dağ çiçəyi', detail: 'Təmiz südün incə dadı', type: 'Yarım sərt pendir', size: '220 q' },
